@@ -36,18 +36,22 @@ const MyAppointment = () => {
     }
   };
 
-  const handleCheckout = async (amount) => {
-    const stripe = await stripePromise;
-    try {
-      const { data } = await axios.post(`${backendUrl}/api/user/create-payment-intent`, { amount }, {
-        headers: { token }
-      });
-      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if (result.error) toast.error(result.error.message);
-    } catch (error) {
-      toast.error("Payment failed");
-    }
-  };
+const handleCheckout = async (appointmentId, amount) => {
+  const stripe = await stripePromise;
+  try {
+    const { data } = await axios.post(`${backendUrl}/api/user/create-payment-intent`, {
+      amount,
+      appointmentId,  // ✅ pass this to backend
+    }, {
+      headers: { token },
+    });
+    const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+    if (result.error) toast.error(result.error.message);
+  } catch (error) {
+    toast.error("Payment failed");
+  }
+};
+
 
   const cancelAppointment = async (appointmentId) => {
     try {
@@ -140,7 +144,7 @@ const MyAppointment = () => {
                     <span className="px-3 py-1 bg-green-50 text-green-700 border border-green-300 rounded text-sm">Paid</span>
                   ) : (
                     <button
-                      onClick={() => handleCheckout(item.amount)}
+                      onClick={() => handleCheckout(item._id,item.amount)}
                       className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                     >
                       Pay Online
