@@ -39,7 +39,7 @@ const MyAppointment = () => {
 const handleCheckout = async (appointmentId, amount) => {
   const stripe = await stripePromise;
   try {
-    const { data } = await axios.post(`https://health-line-backend-6q6h.vercel.app/api/user/create-payment-intent`, {
+    const { data } = await axios.post(`${backendUrl}/api/user/create-payment-intent`, {
       amount,
       appointmentId,  // ✅ pass this to backend
     }, {
